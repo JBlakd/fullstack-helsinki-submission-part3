@@ -61,7 +61,8 @@ app.post('/api/persons', (request, response) => {
 
   // Check if name already exists in the phonebook
   if (persons.find(element => element.name === request.body.name)) {
-    response.json( { error: 'name must be unique' } )
+    response.status(400).json( { error: 'name must be unique' } )
+    return
   }
 
   // Valid request iff request.body.name && request.body.number && two attributes
