@@ -16,24 +16,24 @@ app.use(express.static('build'))
 
 /* Below is old code for when there was no database and the data was stored in a local array */
 // let persons = [
-//   { 
+//   {
 //     "id": 1,
-//     "name": "Arto Hellas", 
+//     "name": "Arto Hellas",
 //     "number": "040-123456"
 //   },
-//   { 
+//   {
 //     "id": 2,
-//     "name": "Ada Lovelace", 
+//     "name": "Ada Lovelace",
 //     "number": "39-44-5323523"
 //   },
-//   { 
+//   {
 //     "id": 3,
-//     "name": "Dan Abramov", 
+//     "name": "Dan Abramov",
 //     "number": "12-43-234345"
 //   },
-//   { 
+//   {
 //     "id": 4,
-//     "name": "Mary Poppendieck", 
+//     "name": "Mary Poppendieck",
 //     "number": "39-23-6423122"
 //   }
 // ]
@@ -45,7 +45,7 @@ app.get('/', (request, response) => {
 app.get('/api/info', (request, response) => {
   let numberOfPersons = 0
   Person.find({}).then(people => {
-    console.log('people found using Person.find({}): ',people)
+    console.log('people found using Person.find({}): ', people)
     numberOfPersons = people.length
     const responseString = `<p>Phonebook has info for ${numberOfPersons} people</p><p>${new Date()}</p>`
     response.send(responseString)
@@ -59,14 +59,15 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-  Person.findById(request.params.id).then(person => {
-    if (person) {
-      response.json(person)
-    } else {
-      response.status(404).end()
-    }
-  })
-  .catch(error => next(error))
+  Person.findById(request.params.id)
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 
   /* Below is old code for when there was no database and the data was stored in a local array */
   // const id = Number(request.params.id)
@@ -79,9 +80,9 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -96,7 +97,7 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
-  /* Deprecated means of validation. Use mongoose schema validation instead. */ 
+  /* Deprecated means of validation. Use mongoose schema validation instead. */
   // if (!(body.hasOwnProperty('name') && body.hasOwnProperty('name') && Object.keys(body).length === 2)) {
   //   return response.status(400).json({ error: 'invalid content' })
   // }
@@ -106,10 +107,11 @@ app.post('/api/persons', (request, response, next) => {
     number: body.number
   })
 
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
-  .catch(error => next(error))
+  person.save()
+    .then(savedPerson => {
+      response.json(savedPerson)
+    })
+    .catch(error => next(error))
   /* Below is old code for when there was no database and the data was stored in a local array */
   // // Check if name already exists in the phonebook
   // if (persons.find(element => element.name === request.body.name)) {
